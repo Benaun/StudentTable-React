@@ -2,7 +2,7 @@ import UserRow from './UserRow';
 import css from './UserTable.module.css'
 
 
-export default function UserTable({ users }) {
+export default function UserTable({ users, onRowClick }) {
   return (
     <table className={css.table}>
       <thead>
@@ -18,7 +18,7 @@ export default function UserTable({ users }) {
       </thead>
       <tbody>
         {users.map((user) => (
-          <UserRow key={user.id} user={user} />
+          <UserRow key={user.id} user={user} onRowClick={onRowClick} />
         ))}
       </tbody>
     </table>

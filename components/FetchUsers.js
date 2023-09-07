@@ -3,7 +3,7 @@ import UserTable from '../components/UserTable';
 import css from './FetchUsers.module.css'
 
 
-export default function FetchUser({}) {
+export default function FetchUser({onRowClick}) {
   const
     [users, setUser] = useState([]),
     [error, setError] = useState(null);
@@ -28,7 +28,7 @@ export default function FetchUser({}) {
   return (
     <div className={css.container}>
       <h1 className={css.title}>Таблица пользователей</h1>
-      <UserTable users={users} />
+      <UserTable users={users} onRowClick={onRowClick} />
     </div>
   );
 }
