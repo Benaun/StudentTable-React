@@ -6,7 +6,7 @@ import css from "./TableWithCards.module.css"
 export default function TableWithCards() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
-    const [posts, setPosts] = useState([]);
+    const [showPosts, setShowPosts] = useState(false);
     
 
     async function handleRowClick(userId) {
@@ -15,17 +15,16 @@ export default function TableWithCards() {
         setSelectedUser(userId);
     };
 
-    async function handlePostsClick(userId) {
-        const showPosts = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}/posts`);
-        setPosts(await showPosts.json());
-    };
+    const handleShowPost = () => {
+        setShowPosts(!showPosts)
+    }
 
     return (
         <div>
             <FetchUsers onRowClick={handleRowClick} />
             {selectedUser && (
                 <div className={css.card__container}>
-                    <UserCard user={userDetails} posts={posts} onPostsClick={handlePostsClick} />
+                    <UserCard user={userDetails} showPosts={showPosts} setShowPosts={handleShowPost}/>
                 </div>   
             )}
         </div>
