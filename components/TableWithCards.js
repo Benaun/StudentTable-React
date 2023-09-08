@@ -7,6 +7,7 @@ export default function TableWithCards() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
     const [posts, setPosts] = useState([]);
+    
 
     async function handleRowClick(userId) {
         const currentUser = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
@@ -14,8 +15,9 @@ export default function TableWithCards() {
         setSelectedUser(userId);
     };
 
-    async function handlePostsClick() {
-        console.log('click')
+    async function handlePostsClick(userId) {
+        const showPosts = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}/posts`);
+        setPosts(await showPosts.json());
     };
 
     return (
@@ -23,7 +25,7 @@ export default function TableWithCards() {
             <FetchUsers onRowClick={handleRowClick} />
             {selectedUser && (
                 <div className={css.card__container}>
-                    <UserCard user={userDetails} onPostsClick={handlePostsClick} />
+                    <UserCard user={userDetails} posts={posts} onPostsClick={handlePostsClick} />
                 </div>   
             )}
         </div>
