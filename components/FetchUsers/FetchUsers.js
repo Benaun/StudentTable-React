@@ -39,7 +39,7 @@ export default function FetchUser({ onRowClick }) {
   return (
     <div className={css.container}>
       <h1 className={css.title}>Таблица пользователей</h1>
-      <div onClick={deleteUser}>
+      <div onClick={deleteUser} >
         <UserTable users={users} onRowClick={onRowClick} />
       </div>
     </div>

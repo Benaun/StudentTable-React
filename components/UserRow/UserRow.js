@@ -24,7 +24,6 @@ export default function UserRow({ user, onRowClick }) {
       <td>{website}</td>
       <td>{cname}</td>
       <td>
-        <button className={css.btn__edit} btn-type='edit'>Ред.</button>
         <button className={css.btn__del} btn-type='delete'>X</button>
       </td>
     </tr>
