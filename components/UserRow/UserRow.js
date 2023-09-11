@@ -15,7 +15,7 @@ export default function UserRow({ user, onRowClick }) {
   };
 
   return (
-    <tr onClick={handleClick} className={css.table__row}>
+    <tr onDoubleClick={handleClick} className={css.table__row} data-user-id={id}>
       <td>{id}</td>
       <td>{name} ({username})</td>
       <td>{street} {suite} {city}</td>
@@ -23,6 +23,10 @@ export default function UserRow({ user, onRowClick }) {
       <td>{phone}</td>
       <td>{website}</td>
       <td>{cname}</td>
+      <td>
+        <button className={css.btn__edit} btn-type='edit'>Ред.</button>
+        <button className={css.btn__del} btn-type='delete'>X</button>
+      </td>
     </tr>
   );
 }

@@ -1,5 +1,5 @@
 import css from './UserCard.module.css';
-import UserPosts from './UserPosts';
+import UserPosts from '../UserPosts/UserPosts';
 
 export default function UserCard({ user, showPosts, setShowPosts }) {
     const

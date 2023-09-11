@@ -1,4 +1,4 @@
-import UserRow from './UserRow';
+import UserRow from '../UserRow/UserRow';
 import css from './UserTable.module.css'
 
 
@@ -14,6 +14,7 @@ export default function UserTable({ users, onRowClick }) {
           <th>Телефон</th>
           <th>Сайт</th>
           <th>Название компании</th>
+          <th>Добавить/удалить</th>
         </tr>
       </thead>
       <tbody>

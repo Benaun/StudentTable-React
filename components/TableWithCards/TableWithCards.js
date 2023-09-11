@@ -1,6 +1,6 @@
-import UserCard from "./UserCard";
+import UserCard from "../UserCard/UserCard";
 import { useState } from "react";
-import FetchUsers from "./FetchUsers";
+import FetchUsers from "../FetchUsers/FetchUsers";
 import css from "./TableWithCards.module.css"
 
 export default function TableWithCards() {

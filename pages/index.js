@@ -1,5 +1,4 @@
-import FetchUser from '../components/FetchUsers';
-import TableWithCards from '../components/TableWithCards';
+import TableWithCards from '../components/TableWithCards/TableWithCards';
 
 export default function Users() {
   return <>
