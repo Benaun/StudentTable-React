@@ -4,9 +4,9 @@ import UserPosts from '../UserPosts/UserPosts';
 export default function UserCard({ user, showPosts, setShowPosts }) {
     const
         { id, name, username, email,
-            address: { street, suite, city, zipcode },
+            address: { street, suite, city },
             phone, website,
-            company: { name: cname, catchPhrase, bs }
+            company: { name: cname}
         } = user;
 
     return (
@@ -22,7 +22,7 @@ export default function UserCard({ user, showPosts, setShowPosts }) {
                 </div>
                 <div>
                     <div>
-                        <p title={zipcode}>
+                        <p >
                             Street: {street}, Suite: {suite}, City: {city}
                         </p>
                     </div>
@@ -31,10 +31,6 @@ export default function UserCard({ user, showPosts, setShowPosts }) {
                     <div>
                         <h2>Company</h2>
                         <p>Name: {cname}</p>
-                        <p>
-                            CatchPhrase: {catchPhrase}
-                        </p>
-                        <p>Bs: {bs}</p>
                     </div>
                 </div>
 
