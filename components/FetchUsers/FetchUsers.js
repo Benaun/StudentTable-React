@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import UserTable from '../UserTable/UserTable';
 import css from './FetchUsers.module.css';
+import SearchInput from '../input/SearchInput';
 
 
 export default function FetchUser({ onRowClick }) {
   const
     [users, setUsers] = useState([]),
+    [searchValue, setSearchValue] = useState(''),
     [error, setError] = useState(null);
-    // [searchValue, setSearchValue] = useState('');
 
   const columns = [
     { title: 'Id', getVal: obj => obj.id },
@@ -48,19 +49,18 @@ export default function FetchUser({ onRowClick }) {
     }
   };
 
-  // if (searchValue) {
-  //   const seachUsers = users.filter(obj => columns
-  //     .map(column => column.getVal(obj).toString().toLowerCase())
-  //     .some(str => str.includes(searchValue.toLowerCase())));
-  //   setUsers(seachUsers);
-  // }
+  const handleSearchValue = (value) => {
+    const seachUsers = users.filter(obj => columns
+      .map(column => column.getVal(obj).toString().toLowerCase())
+      .some(str => str.includes(searchValue.toLowerCase())));
+    setUsers(seachUsers);
+    setSearchValue(value);
+  };
 
   return (
     <div className={css.container}>
       <h1 className={css.title}>Таблица пользователей</h1>
-
-      {/* <input type="search" value={searchValue} placeholder='Поиск' onInput={evt => setSearchValue(evt.target.value)}></input> */}
-
+      <SearchInput searchValue={searchValue} onSearch={handleSearchValue} />
       <div onClick={(deleteUser)} >
         <UserTable users={users} onRowClick={onRowClick} columns={columns} />
       </div>
