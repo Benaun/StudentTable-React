@@ -19,8 +19,8 @@ export default function UserTable({ users, columns, onRowClick }) {
 
           {columns.map(({ title, getVal }) => <td key={title}>{getVal(user)}</td>)}
           <td>
-            <button className={css.btn__edit} btn-type='edit'>Ред.</button>
-            <button className={css.btn__del} btn-type='delete'>X</button>
+            <button className={css.btn__edit} data-id={user.id} data-action='edit'>Ред.</button>
+            <button className={css.btn__del} data-id={user.id} data-action='delete'>X</button>
           </td>
         </tr>)}
       </tbody>
