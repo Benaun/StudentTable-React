@@ -18,7 +18,7 @@ export default function GenFetcher({ fetcher, children, onLoadCallback }) {
                 setError(err);
             }
         } f();
-    }, [fetcher, onLoadCallback]);
+    }, [onLoadCallback]);
 
     if (error) return <Error error={error} />;
     if (data) return <>{children}</>;
