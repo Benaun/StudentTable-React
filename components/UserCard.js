@@ -1,10 +1,10 @@
-import css from './UserCard.module.css';
-import UserPosts from '../UserPosts/UserPosts';
+import css from './StylesModules/UserCard.module.css';
+import UserPosts from './UserPosts';
 
 export default function UserCard({ user, showPosts, setShowPosts }) {
     const
         { id, name, username, email,
-            address: { street, suite, city },
+            address: { city },
             phone, website,
             company: { name: cname}
         } = user;
@@ -23,7 +23,7 @@ export default function UserCard({ user, showPosts, setShowPosts }) {
                 <div>
                     <div>
                         <p >
-                            Street: {street}, Suite: {suite}, City: {city}
+                            Street: City: {city}
                         </p>
                     </div>
                 </div>

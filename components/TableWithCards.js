@@ -1,7 +1,7 @@
-import UserCard from "../UserCard/UserCard";
+import UserCard from "./UserCard";
 import { useState } from "react";
-import FetchUsers from "../FetchUsers/FetchUsers";
-import css from "./TableWithCards.module.css"
+import FetchUsers from "./FetchUsers";
+import css from "./StylesModules/TableWithCards.module.css"
 
 export default function TableWithCards() {
     const [selectedUser, setSelectedUser] = useState(null);

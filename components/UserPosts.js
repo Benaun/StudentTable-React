@@ -1,4 +1,4 @@
-import css from './UserPosts.module.css';
+import css from './StylesModules/UserPosts.module.css';
 import { useState, useEffect } from 'react';
 
 export default function UserPosts({ id }) {

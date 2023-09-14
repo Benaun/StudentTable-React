@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import UserTable from '../UserTable/UserTable';
-import GenFetcher from '../GenFetcher';
-import css from './FetchUsers.module.css';
+import UserTable from './UserTable';
+import GenFetcher from './GenFetcher';
+import AddUserRow from './AddNewUser';
+import css from './StylesModules/FetchUsers.module.css';
 
 
 export default function FetchUser({ onRowClick }) {
@@ -11,11 +12,11 @@ export default function FetchUser({ onRowClick }) {
     columns = [
       { title: 'Id', getVal: obj => obj.id },
       { title: 'Name', getVal: obj => obj.name },
-      { title: 'Address', getVal: ({ address: { street, suite, city } }) => `${city}, ${street} ${suite}` },
+      { title: 'Address', getVal: obj => obj.address?.city },
       { title: 'Email', getVal: obj => obj.email },
       { title: 'Website', getVal: obj => obj.website },
       { title: 'Phone number', getVal: obj => obj.phone },
-      { title: 'Company name', getVal: obj => obj.company.name }
+      { title: 'Company name', getVal: obj => obj.company?.name }
     ];
 
   async function fetcher() {
@@ -28,7 +29,7 @@ export default function FetchUser({ onRowClick }) {
   function onClick(evt) {
     const source = evt.target.closest('button[data-action]');
     if (!source) return;
-    const {action}  = source.dataset;
+    const { action } = source.dataset;
     switch (action) {
       case 'delete':
         const userDel = (source.closest('tr[data-user-id]'));
@@ -39,6 +40,15 @@ export default function FetchUser({ onRowClick }) {
         }
         return;
       // case 'edit':
+      //   const userEdit = (source.closest('tr[data-user-id]'));
+      //   if (userEdit) {
+      //     const updateUsers = [...users];
+      //     updateUsers.splice(users, 1);
+      //     setUsers(updateUsers);
+      //   }
+      //   return;
+
+      // case 'add':
       //   setPaneInfoId(id);
       //   setPanelSubQueryId(null);
       //   return;
@@ -55,6 +65,7 @@ export default function FetchUser({ onRowClick }) {
       <h1 className={css.title}>Таблица пользователей</h1>
       <input value={searchValue} onInput={event => setSearchValue(event.target.value)} />
       <GenFetcher fetcher={fetcher} onLoadCallback={setUsers}>
+        <AddUserRow key={Date.now} users={users} handleFormSubmit={user => setUsers([...users, user])} />
         <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columns} />
       </GenFetcher>
     </div>

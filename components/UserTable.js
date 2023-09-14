@@ -1,4 +1,4 @@
-import css from './UserTable.module.css';
+import css from './StylesModules/UserTable.module.css';
 
 
 export default function UserTable({ users, columns, onRowClick }) {
