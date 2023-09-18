@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import UserTable from './UserTable';
 import GenFetcher from './GenFetcher';
-import AddUserRow from './AddNewUser';
 import css from './StylesModules/FetchUsers.module.css';
 
 
@@ -50,8 +49,8 @@ export default function FetchUser({ onRowClick }) {
       }
       return;
     }
-    const th = evt.target.closest('thead th');
-    if (th) {
+    const th = evt.target.closest('th');
+    if (th && th.cellIndex !==7) {
       let newSort;
       if (Math.abs(sortColumns) === 1 + th.cellIndex) {
         newSort = -sortColumns;
@@ -85,6 +84,7 @@ export default function FetchUser({ onRowClick }) {
   return (
     <div className={css.container} onClick={onClick}>
       <h1 className={css.title}>Таблица пользователей</h1>
+      <input className={css.search__input} placeholder='Поиск по таблице' value={searchValue} onInput={event => setSearchValue(event.target.value)} />
       <GenFetcher fetcher={fetcher} onLoadCallback={setUsers}>
         <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columns} sortColumns={sortColumns} />
       </GenFetcher>
