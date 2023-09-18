@@ -1,13 +1,21 @@
 import css from './StylesModules/UserTable.module.css';
 
 
-export default function UserTable({ users, columns, onRowClick }) {
+export default function UserTable({ users, columns, onRowClick, sortColumns }) {
 
   return (
     <table className={css.table}>
       <thead>
         <tr>
-          {columns.map(({ title }) => <th key={title}>{title}</th>)}
+          {columns.map(({ title }, index) =>
+            <th
+              key={title}
+              className={[
+                index === Math.abs(sortColumns) - 1 ? css.sort: '',
+                index === Math.abs(sortColumns) - 1 && sortColumns < 0 ? css.desc: ''].join(' ')}
+            >
+              {title}
+            </th>)}
         </tr>
       </thead>
       <tbody>
@@ -18,10 +26,6 @@ export default function UserTable({ users, columns, onRowClick }) {
           data-user-id={user.id}>
 
           {columns.map(({ title, getVal }) => <td key={title}>{getVal(user)}</td>)}
-          <td>
-            <button className={css.btn__edit} data-id={user.id} data-action='edit'>Ред.</button>
-            <button className={css.btn__del} data-id={user.id} data-action='delete'>X</button>
-          </td>
         </tr>)}
       </tbody>
     </table>

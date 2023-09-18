@@ -1,4 +1,4 @@
-.table thead tr{
+.table thead tr {
     font-size: 25px;
     background-color: #386fc0;
     color: #fff;
@@ -6,11 +6,11 @@
 }
 
 
-.table__row:nth-child(2n){
+.table__row:nth-child(2n) {
     background-color: #658d76;
 }
 
-.table__row:nth-child(2n+1){
+.table__row:nth-child(2n+1) {
     background-color: #818894;
 }
 
@@ -18,15 +18,10 @@
     font-size: 20px;
 }
 
-.btn__del {
-    background-color: rgb(216, 96, 96);
-    padding: 2px 5px;
-    border-radius: 8px;
+.sort::after {
+    content: '▲';
 }
 
-.btn__edit {
-    background-color: #78ca9b;
-    padding: 2px 5px;
-    border-radius: 8px;
-    margin-right: 5px;
+.sort .desc::after {
+    content: '▼'
 }

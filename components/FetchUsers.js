@@ -8,6 +8,7 @@ import css from './StylesModules/FetchUsers.module.css';
 export default function FetchUser({ onRowClick }) {
   const
     [users, setUsers] = useState([]),
+    [sortColumns, setSortColumns] = useState('0'),
     [searchValue, setSearchValue] = useState(''),
     columns = [
       { title: 'Id', getVal: obj => obj.id },
@@ -16,8 +17,15 @@ export default function FetchUser({ onRowClick }) {
       { title: 'Email', getVal: obj => obj.email },
       { title: 'Website', getVal: obj => obj.website },
       { title: 'Phone number', getVal: obj => obj.phone },
-      { title: 'Company name', getVal: obj => obj.company?.name }
+      { title: 'Company name', getVal: obj => obj.company?.name },
+      {
+        title: 'Action', getVal: ({ id }) => <>
+          <button className={css.btn__edit} data-id={id} data-action='edit'>Ред.</button>
+          <button className={css.btn__del} data-id={id} data-action='delete'>X</button>
+        </>
+      }
     ];
+
 
   async function fetcher() {
     const
@@ -28,30 +36,44 @@ export default function FetchUser({ onRowClick }) {
 
   function onClick(evt) {
     const source = evt.target.closest('button[data-action]');
-    if (!source) return;
-    const { action } = source.dataset;
-    switch (action) {
-      case 'delete':
-        const userDel = (source.closest('tr[data-user-id]'));
-        if (userDel) {
-          const updateUsers = [...users];
-          updateUsers.splice(users, 1);
-          setUsers(updateUsers);
-        }
-        return;
-      // case 'edit':
-      //   const userEdit = (source.closest('tr[data-user-id]'));
-      //   if (userEdit) {
-      //     const updateUsers = [...users];
-      //     updateUsers.splice(users, 1);
-      //     setUsers(updateUsers);
-      //   }
-      //   return;
+    if (source) {
+      const { action } = source.dataset;
+      switch (action) {
+        case 'delete':
+          const userDel = (source.closest('tr[data-user-id]'));
+          if (userDel) {
+            const updateUsers = [...users];
+            updateUsers.splice(users, 1);
+            setUsers(updateUsers);
+          }
+          return;
+      }
+      return;
+    }
+    const th = evt.target.closest('thead th');
+    if (th) {
+      let newSort;
+      if (Math.abs(sortColumns) === 1 + th.cellIndex) {
+        newSort = -sortColumns;
+      } else {
+        newSort = 1 + th.cellIndex;
+      }
+      const { getVal } = columns[Math.abs(newSort) - 1];
 
-      // case 'add':
-      //   setPaneInfoId(id);
-      //   setPanelSubQueryId(null);
-      //   return;
+      const sortedUsers = users.toSorted((a, b) => {
+        switch (true) {
+          case (typeof getVal(a) === 'number' && typeof getVal(b) === 'number'):
+            return getVal(a) - getVal(b);
+          case (typeof getVal(a) === 'string' && typeof getVal(b) === 'string'):
+            return getVal(a).localeCompare(getVal(b));
+        }
+      });
+
+      if (newSort < 0) {
+        sortedUsers.reverse();
+      }
+      setUsers(sortedUsers);
+      setSortColumns(newSort);
     }
   }
 
@@ -63,10 +85,8 @@ export default function FetchUser({ onRowClick }) {
   return (
     <div className={css.container} onClick={onClick}>
       <h1 className={css.title}>Таблица пользователей</h1>
-      <input value={searchValue} onInput={event => setSearchValue(event.target.value)} />
       <GenFetcher fetcher={fetcher} onLoadCallback={setUsers}>
-        <AddUserRow key={Date.now} users={users} handleFormSubmit={user => setUsers([...users, user])} />
-        <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columns} />
+        <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columns} sortColumns={sortColumns} />
       </GenFetcher>
     </div>
   );
