@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import UserTable from './UserTable';
 import GenFetcher from './GenFetcher';
+import UserForm from './UserForm';
 import { randomId } from '../helpers/randomId'
 import columns from '../helpers/columns';
 import css from './StylesModules/FetchUsers.module.css';
@@ -44,19 +45,21 @@ export default function FetchUser({ onRowClick }) {
           return;
         case 'cancel':
           setNewUserId(null);
+          setValues(columns.map(() => ''));
           return;
         case 'ok':
           if (newUserId) {
-            const newUser = users[newUserId];
-            columns.forEach(({ setVal }, index) => Object.assign(newUser, setVal?.(values[index])));
-            setUsers(old => old.with(newUserId, newUser));
-            console.log(newUserId)
+            const index = users.findIndex((obj) => String(obj.id) === String(newUserId));
+            const newUser = users[index];
+            columns.forEach(({ setVal }, id) => Object.assign(newUser, setVal?.(values[id])));
+            setUsers(old => old.with(index, newUser));
           } else {
             const newUser = { id: randomId(users) };
             columns.forEach(({ setVal }, index) => Object.assign(newUser, setVal?.(values[index])));
             setUsers(users.concat(newUser));
           };
           setNewUserId(null);
+          setValues(columns.map(() => ''));
       };
       return;
     };
@@ -94,29 +97,13 @@ export default function FetchUser({ onRowClick }) {
     return columns.map(({ getVal }) => getVal(el)).filter(x => 'string' === typeof x).some(x => x.toLowerCase().includes(searchValue.toLowerCase()));
   };
 
-  function UserForm() {
-    return <tr>
-      {columns.map(({ title, setVal, getVal }, index) =>
-        <td key={title}>
-          {setVal
-            ? <input value={values[index]} onInput={event => setValues(old => old.with(index, event.target.value))} />
-            : ' '}
-        </td>)
-      }
-      <td>
-        <button className={[css.btn, css.btn__ok].join(' ')} data-id={''} data-action='ok'>&#9989;</button>
-        <button className={[css.btn, css.btn__cancel].join(' ')} data-id={''} data-action='cancel'>&#10060;</button>
-      </td>
-    </tr >
-  };
-
   return (
     <div className={css.container} onClick={onClick}>
       <h1 className={css.title}>Таблица пользователей</h1>
       <input className={css.search__input} placeholder='Поиск по таблице' value={searchValue} onInput={event => setSearchValue(event.target.value)} />
       <GenFetcher fetcher={fetcher} onLoadCallback={setUsers}>
         <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columnsWithButtons} sortColumns={sortColumns} newUserId={newUserId}>
-          <UserForm />
+          <UserForm columns={columns} values={values} setValues={setValues}/>
         </UserTable>
       </GenFetcher>
     </div>
