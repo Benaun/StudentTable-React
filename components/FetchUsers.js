@@ -1,29 +1,25 @@
 import { useState } from 'react';
 import UserTable from './UserTable';
 import GenFetcher from './GenFetcher';
+import { randomId } from '../helpers/randomId'
+import columns from '../helpers/columns';
 import css from './StylesModules/FetchUsers.module.css';
 
 
 export default function FetchUser({ onRowClick }) {
   const
-    [users, setUsers] = useState([]),
+    [users, setUsers] = useState(null),
     [sortColumns, setSortColumns] = useState('0'),
-    [searchValue, setSearchValue] = useState(''),
-    columns = [
-      { title: 'Id', getVal: obj => obj.id },
-      { title: 'Name', getVal: obj => obj.name },
-      { title: 'Address', getVal: obj => obj.address?.city },
-      { title: 'Email', getVal: obj => obj.email },
-      { title: 'Website', getVal: obj => obj.website },
-      { title: 'Phone number', getVal: obj => obj.phone },
-      { title: 'Company name', getVal: obj => obj.company?.name },
-      {
-        title: 'Action', getVal: ({ id }) => <>
-          <button className={css.btn__edit} data-id={id} data-action='edit'>Ред.</button>
-          <button className={css.btn__del} data-id={id} data-action='delete'>X</button>
-        </>
-      }
-    ];
+    [newUserId, setNewUserId] = useState(null),
+    [values, setValues] = useState(columns.map(() => '')),
+    [searchValue, setSearchValue] = useState('');
+
+  const columnsWithButtons = columns.concat({
+    title: 'Actions', getVal: ({ id }) => <>
+      <button className={[css.btn, css.btn__edit].join(' ')} data-id={id} data-action='edit'>Ред.</button>
+      <button className={[css.btn, css.btn__del].join(' ')} data-id={id} data-action='delete'>X</button>
+    </>
+  });
 
 
   async function fetcher() {
@@ -36,21 +32,38 @@ export default function FetchUser({ onRowClick }) {
   function onClick(evt) {
     const source = evt.target.closest('button[data-action]');
     if (source) {
-      const { action } = source.dataset;
+      const { action, id } = source.dataset;
       switch (action) {
         case 'delete':
-          const userDel = (source.closest('tr[data-user-id]'));
-          if (userDel) {
-            const updateUsers = [...users];
-            updateUsers.splice(users, 1);
-            setUsers(updateUsers);
-          }
+          setUsers(old => old.filter(el => String(el.id) !== id));
           return;
-      }
+        case 'edit':
+          setNewUserId(id);
+          const index = users.findIndex((obj) => String(obj.id) === String(id));
+          setValues(columns.map(({ setVal, getVal }) => setVal ? getVal(users[index]) : ''));
+          return;
+        case 'cancel':
+          setNewUserId(null);
+          return;
+        case 'ok':
+          if (newUserId) {
+            const newUser = users[newUserId];
+            columns.forEach(({ setVal }, index) => Object.assign(newUser, setVal?.(values[index])));
+            setUsers(old => old.with(newUserId, newUser));
+            console.log(newUserId)
+          } else {
+            const newUser = { id: randomId(users) };
+            columns.forEach(({ setVal }, index) => Object.assign(newUser, setVal?.(values[index])));
+            setUsers(users.concat(newUser));
+          };
+          setNewUserId(null);
+      };
       return;
-    }
+    };
+
+
     const th = evt.target.closest('th');
-    if (th && th.cellIndex !==7) {
+    if (th && th.cellIndex !== 7) {
       let newSort;
       if (Math.abs(sortColumns) === 1 + th.cellIndex) {
         newSort = -sortColumns;
@@ -70,24 +83,42 @@ export default function FetchUser({ onRowClick }) {
 
       if (newSort < 0) {
         sortedUsers.reverse();
-      }
+      };
       setUsers(sortedUsers);
       setSortColumns(newSort);
-    }
-  }
+    };
+  };
 
   function filterObjects(el) {
     if (!searchValue) return true;
     return columns.map(({ getVal }) => getVal(el)).filter(x => 'string' === typeof x).some(x => x.toLowerCase().includes(searchValue.toLowerCase()));
-  }
+  };
+
+  function UserForm() {
+    return <tr>
+      {columns.map(({ title, setVal, getVal }, index) =>
+        <td key={title}>
+          {setVal
+            ? <input value={values[index]} onInput={event => setValues(old => old.with(index, event.target.value))} />
+            : ' '}
+        </td>)
+      }
+      <td>
+        <button className={[css.btn, css.btn__ok].join(' ')} data-id={''} data-action='ok'>&#9989;</button>
+        <button className={[css.btn, css.btn__cancel].join(' ')} data-id={''} data-action='cancel'>&#10060;</button>
+      </td>
+    </tr >
+  };
 
   return (
     <div className={css.container} onClick={onClick}>
       <h1 className={css.title}>Таблица пользователей</h1>
       <input className={css.search__input} placeholder='Поиск по таблице' value={searchValue} onInput={event => setSearchValue(event.target.value)} />
       <GenFetcher fetcher={fetcher} onLoadCallback={setUsers}>
-        <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columns} sortColumns={sortColumns} />
+        <UserTable users={users?.filter(filterObjects)} onRowClick={onRowClick} columns={columnsWithButtons} sortColumns={sortColumns} newUserId={newUserId}>
+          <UserForm />
+        </UserTable>
       </GenFetcher>
     </div>
   );
-}
+};
