@@ -1,4 +1,5 @@
 import css from './StylesModules/UserTable.module.css';
+import { Fragment } from 'react';
 
 
 export default function UserTable({ users, columns, onRowClick, sortColumns, newUserId, children }) {
@@ -20,7 +21,7 @@ export default function UserTable({ users, columns, onRowClick, sortColumns, new
       </thead>
       <tbody>
         {users.map(user =>
-          <>
+          <Fragment key={user.id}>
             {String(user.id) === String(newUserId)
               ? <>{children}</>
               : <tr
@@ -30,7 +31,7 @@ export default function UserTable({ users, columns, onRowClick, sortColumns, new
                 data-user-id={user.id}>
                 {columns.map(({ title, getVal }) => <td key={title}>{getVal(user)}</td>)}
               </tr>}
-          </>
+          </Fragment>
         )}
       </tbody>
       {!newUserId &&
